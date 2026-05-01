@@ -1,0 +1,243 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 220 20% 14%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 14%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 14%;
+
+    /* Deep navy brand for light theme */
+    --primary: 218 65% 18%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Light grey surface */
+    --secondary: 210 30% 97%;
+    --secondary-foreground: 218 65% 18%;
+
+    --muted: 210 30% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    /* Vivid electric blue accent */
+    --accent: 205 100% 52%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 215 25% 90%;
+    --input: 215 25% 90%;
+    --ring: 205 100% 52%;
+
+    --steel: 215 14% 60%;
+    --steel-foreground: 0 0% 100%;
+
+    --surface-soft: 210 40% 98%;
+    --surface-blue: 205 95% 96%;
+
+    --radius: 1rem;
+
+    /* Hero Gradient (STAYS DARK) */
+    --gradient-hero: linear-gradient(135deg, hsl(220 30% 5% / 0.97) 0%, hsl(218 50% 10% / 0.93) 50%, hsl(205 70% 15% / 0.88) 100%);
+    
+    /* Global Blue Gradient */
+    --gradient-blue: linear-gradient(135deg, hsl(205 100% 52%) 0%, hsl(218 90% 45%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(38 92% 60%) 0%, hsl(28 95% 52%) 100%);
+    --gradient-section-title: linear-gradient(120deg, hsl(196 92% 52%) 0%, hsl(221 85% 56%) 45%, hsl(258 82% 64%) 100%);
+    
+    /* Light Theme Section Gradients */
+    --gradient-soft: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(205 95% 97%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(205 60% 98%) 100%);
+    --gradient-glow: linear-gradient(135deg, hsl(205 100% 52% / 0.08) 0%, hsl(218 90% 45% / 0.04) 100%);
+    --gradient-section: linear-gradient(180deg, hsl(203 100% 99%) 0%, hsl(205 92% 96%) 55%, hsl(200 85% 98%) 100%);
+
+    /* Light Theme Shadows */
+    --shadow-soft: 0 4px 20px -4px hsl(218 65% 18% / 0.08);
+    --shadow-elegant: 0 20px 50px -20px hsl(218 65% 18% / 0.18);
+    --shadow-blue: 0 12px 30px -8px hsl(205 100% 52% / 0.35);
+    --shadow-gold: 0 12px 30px -8px hsl(38 92% 60% / 0.25);
+    --shadow-card: 0 2px 12px -2px hsl(218 50% 30% / 0.06);
+    --shadow-glow: 0 0 40px -10px hsl(205 100% 52% / 0.15);
+
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 1.05rem; /* Slightly larger for luxury feel */
+    line-height: 1.65;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Outfit', sans-serif;
+    @apply tracking-tight font-bold;
+    letter-spacing: -0.02em;
+  }
+  html { scroll-behavior: smooth; }
+
+  /* Custom scrollbar for light theme */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: hsl(210 30% 96%); }
+  ::-webkit-scrollbar-thumb { background: hsl(205 100% 52% / 0.3); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(205 100% 52% / 0.5); }
+
+  ::selection { background: hsl(205 100% 52% / 0.2); color: inherit; }
+}
+
+@layer utilities {
+  .gradient-blue    { background: var(--gradient-blue); }
+  .gradient-gold    { background: var(--gradient-gold); }
+  .gradient-soft    { background: var(--gradient-soft); }
+  .gradient-card    { background: var(--gradient-card); }
+  .gradient-hero    { background: var(--gradient-hero); }
+  .gradient-glow    { background: var(--gradient-glow); }
+  .gradient-section { background: var(--gradient-section); }
+  .shadow-soft      { box-shadow: var(--shadow-soft); }
+  .shadow-elegant   { box-shadow: var(--shadow-elegant); }
+  .shadow-blue      { box-shadow: var(--shadow-blue); }
+  .shadow-gold      { box-shadow: var(--shadow-gold); }
+  .shadow-card      { box-shadow: var(--shadow-card); }
+  .shadow-glow      { box-shadow: var(--shadow-glow); }
+  .transition-smooth { transition: var(--transition-smooth); }
+
+  .text-gradient {
+    background: var(--gradient-blue);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-section {
+    background: var(--gradient-section-title);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-gold {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Glassmorphism (Specific to Nav/Hero usually) */
+  .glass {
+    background: hsla(220, 20%, 10%, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .glass-blue {
+    background: hsla(205, 100%, 52%, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsla(205, 100%, 52%, 0.2);
+  }
+
+  .glow-orb {
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    position: absolute;
+  }
+
+  .hover-lift { @apply transition-smooth; }
+  .hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-elegant);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1), transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .reveal.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .shine::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -75%;
+    width: 50%;
+    height: 200%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
+  }
+  .shine:hover::after { left: 125%; }
+
+  .stat-number {
+    background: var(--gradient-blue);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .section-divider {
+    width: 60px;
+    height: 3px;
+    background: var(--gradient-blue);
+    border-radius: 99px;
+    margin: 0 auto 1.5rem;
+  }
+
+  .tracking-premium {
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .card-premium {
+    background: var(--gradient-card);
+    border: 1px solid var(--border);
+    transition: var(--transition-smooth);
+  }
+  .card-premium:hover {
+    border-color: hsla(205, 100%, 52%, 0.3);
+    box-shadow: 0 0 0 1px hsla(205, 100%, 52%, 0.1), var(--shadow-elegant);
+    transform: translateY(-6px);
+  }
+
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes particleFloat {
+  0%   { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.6; }
+  33%  { transform: translateY(-30px) translateX(15px) scale(1.1); opacity: 1; }
+  66%  { transform: translateY(-10px) translateX(-10px) scale(0.9); opacity: 0.7; }
+  100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.6; }
+}
+@keyframes orbPulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50%       { transform: scale(1.1); opacity: 0.5; }
+}
+@keyframes shimmerLine {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+
+.animate-orb-pulse { animation: orbPulse 6s ease-in-out infinite; }
+.animate-shimmer {
+  animation: shimmerLine 2.5s ease-in-out infinite;
+}
