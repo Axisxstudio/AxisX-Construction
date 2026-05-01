@@ -63,8 +63,24 @@ export default function Footer() {
         </div>
 
         <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/60">
-          <div>© {new Date().getFullYear()} SSGROUP Engineering & Construction. All rights reserved.</div>
-          <div>Construction Company in Trincomalee, Sri Lanka</div>
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6">
+            <span>© {new Date().getFullYear()} SSGROUP Engineering & Construction. All rights reserved.</span>
+            <div className="flex items-center gap-1">
+              <span>Developed by</span>
+              <a 
+                href="https://axisxstudio.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="font-semibold text-accent hover:underline decoration-accent/30 underline-offset-4 transition-all"
+              >
+                AxisX Studio
+              </a>
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="h-1 w-1 rounded-full bg-accent/40" />
+            Construction Company in Trincomalee, Sri Lanka
+          </div>
         </div>
       </div>
     </footer>

@@ -36,8 +36,8 @@ const App = () => {
           </div>
         ) : null}
         <div
-          className={`transition-all duration-700 ease-out ${
-            loading ? "opacity-0 scale-[0.99] blur-[2px]" : "opacity-100 scale-100 blur-0"
+          className={`transition-all duration-1000 ease-out ${
+            loading ? "opacity-0 scale-[0.98] blur-md" : "opacity-100"
           }`}
         >
           <Toaster />

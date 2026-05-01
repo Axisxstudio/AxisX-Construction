@@ -180,19 +180,17 @@ export default function Hero() {
 
           {slide.highlights ? (
             <div
-              className={`mb-10 animate-fade-in-up ${
-                slide.highlightVariant === "premium-grid" ? "grid grid-cols-1 sm:grid-cols-2 gap-3" : "grid grid-cols-1 sm:grid-cols-2 gap-3"
-              }`}
+              className={`mb-10 animate-fade-in-up ${slide.highlightVariant === "premium-grid" ? "grid grid-cols-1 sm:grid-cols-2 gap-3" : "grid grid-cols-1 sm:grid-cols-2 gap-3"
+                }`}
               style={{ animationDelay: "0.15s" }}
             >
               {slide.highlights.map((item) => (
                 <div
                   key={item.label}
-                  className={`group ${
-                    slide.highlightVariant === "premium-grid"
-                      ? "relative overflow-hidden rounded-2xl border border-white/15 bg-[linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.04))] backdrop-blur-md px-4 py-3.5"
-                      : "flex items-center gap-2.5 px-4 py-3 rounded-xl glass text-white/90"
-                  }`}
+                  className={`group ${slide.highlightVariant === "premium-grid"
+                    ? "relative overflow-hidden rounded-2xl border border-white/15 bg-[linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.04))] backdrop-blur-md px-4 py-3.5"
+                    : "flex items-center gap-2.5 px-4 py-3 rounded-xl glass text-white/90"
+                    }`}
                 >
                   {slide.highlightVariant === "premium-grid" ? (
                     <>

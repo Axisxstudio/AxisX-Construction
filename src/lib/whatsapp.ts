@@ -1,5 +1,5 @@
-export const WHATSAPP_NUMBER = "94770000000"; // Replace with real number
-export const PHONE_DISPLAY = "+94 77 000 0000";
+export const WHATSAPP_NUMBER = "94771354761";
+export const PHONE_DISPLAY = "077 135 4761";
 export const EMAIL = "info@ssgroup.lk";
 export const ADDRESS = "Trincomalee, Sri Lanka";
 export const FACEBOOK_URL = "https://web.facebook.com/ssgroupenterprises/?_rdc=1&_rdr#";

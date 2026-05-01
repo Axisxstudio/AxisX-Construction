@@ -21,7 +21,7 @@ export default function Header() {
 
   useEffect(() => {
     const onScroll = () => {
-      setScrolled(window.scrollY > 30);
+      setScrolled(window.scrollY > 10);
       // Detect active section
       const sections = links.map((l) => l.href.replace("#", ""));
       for (const s of [...sections].reverse()) {
@@ -53,9 +53,9 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${
         scrolled
-          ? "glass shadow-[0_4px_40px_-8px_hsl(0_0%_0%/0.5)] py-0"
+          ? "glass shadow-[0_8px_32px_-8px_hsl(0_0%_0%/0.3)] py-0 border-b border-white/10"
           : "bg-transparent py-2"
       }`}
     >
