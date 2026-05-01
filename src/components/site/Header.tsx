@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Menu, X, HardHat, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
@@ -18,6 +18,8 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [headerHeight, setHeaderHeight] = useState(86);
+  const headerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const onScroll = () => {
@@ -51,10 +53,25 @@ export default function Header() {
     };
   }, [open]);
 
+  useEffect(() => {
+    const updateHeaderHeight = () => {
+      if (!headerRef.current) return;
+      setHeaderHeight(Math.ceil(headerRef.current.getBoundingClientRect().height));
+    };
+    updateHeaderHeight();
+    window.addEventListener("resize", updateHeaderHeight);
+    window.addEventListener("scroll", updateHeaderHeight, { passive: true });
+    return () => {
+      window.removeEventListener("resize", updateHeaderHeight);
+      window.removeEventListener("scroll", updateHeaderHeight);
+    };
+  }, []);
+
   return (
     <header
+      ref={headerRef}
       className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${
-        scrolled
+        scrolled && !open
           ? "glass shadow-[0_8px_32px_-8px_hsl(0_0%_0%/0.3)] py-0 border-b border-white/10"
           : "bg-transparent py-2"
       }`}
@@ -131,7 +148,7 @@ export default function Header() {
       {/* Mobile Menu */}
       {open && (
         <div
-          className="lg:hidden fixed inset-0 z-40 bg-[linear-gradient(160deg,hsl(220_32%_8%/0.98),hsl(215_40%_12%/0.96),hsl(205_52%_15%/0.95))] backdrop-blur-md transition-all duration-500 ease-out animate-fade-in"
+          className="lg:hidden fixed inset-0 z-[200] bg-[linear-gradient(160deg,hsl(220_32%_8%/0.98),hsl(215_40%_12%/0.96),hsl(205_52%_15%/0.95))] backdrop-blur-md transition-all duration-500 ease-out animate-fade-in"
           onClick={() => setOpen(false)}
         >
           <nav
@@ -143,12 +160,12 @@ export default function Header() {
                 <a href="#home" onClick={() => setOpen(false)} className="flex items-center gap-3">
                   <img
                     src={logo}
-                    alt="SSGROUP Engineering & Construction logo"
+                    alt="logo"
                     width={40}
                     height={40}
                     className="h-10 w-10 object-contain"
                   />
-                  <div className="leading-tight">
+                  <div className="leading-tight text-left">
                     <div className="font-display font-bold text-white text-base tracking-wide">SSGROUP</div>
                     <div className="text-[9px] tracking-premium text-accent/80 font-medium">Engineering & Construction</div>
                   </div>
@@ -156,10 +173,9 @@ export default function Header() {
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  aria-label="Close menu"
                   className="p-2 text-white/90 hover:text-white transition-smooth"
                 >
-                  <X className="h-5 w-5" />
+                  <X className="h-6 w-6" />
                 </button>
               </div>
             </div>
