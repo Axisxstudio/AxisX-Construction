@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import PageLoader from "@/components/site/PageLoader";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import { AnimatePresence, motion } from "framer-motion";
 
 const queryClient = new QueryClient();
 
@@ -16,7 +17,7 @@ const App = () => {
 
   useEffect(() => {
     const revealTimer = window.setTimeout(() => setLoading(false), 1500);
-    const hideLoaderTimer = window.setTimeout(() => setShowLoader(false), 2100);
+    const hideLoaderTimer = window.setTimeout(() => setShowLoader(false), 2300);
     return () => {
       window.clearTimeout(revealTimer);
       window.clearTimeout(hideLoaderTimer);
@@ -26,19 +27,24 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        {showLoader ? (
-          <div
-            className={`fixed inset-0 z-[100] transition-all duration-700 ease-out ${
-              loading ? "opacity-100 scale-100" : "opacity-0 scale-[1.03] pointer-events-none"
-            }`}
-          >
-            <PageLoader />
-          </div>
-        ) : null}
-        <div
-          className={`transition-all duration-1000 ease-out ${
-            loading ? "opacity-0 scale-[0.98] blur-md" : "opacity-100"
-          }`}
+        <AnimatePresence>
+          {showLoader && (
+            <motion.div
+              key="page-loader"
+              className="fixed inset-0 z-[100]"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0, scale: 1.04 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <PageLoader />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <motion.div
+          initial={{ opacity: 0, filter: "blur(12px)" }}
+          animate={!loading ? { opacity: 1, filter: "blur(0px)" } : {}}
+          transition={{ duration: 0.9, ease: "easeOut" }}
         >
           <Toaster />
           <Sonner />
@@ -49,7 +55,7 @@ const App = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
-        </div>
+        </motion.div>
       </TooltipProvider>
     </QueryClientProvider>
   );

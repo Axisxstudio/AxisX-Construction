@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { z } from "zod";
 import { Phone, Mail, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { whatsappLink, PHONE_DISPLAY, EMAIL, ADDRESS, WHATSAPP_NUMBER } from "@/lib/whatsapp";
+import { motion, useInView } from "framer-motion";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Enter your full name").max(100),
@@ -29,9 +30,22 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
+const contactItems = [
+  {
+    href: (phone: string) => `tel:${phone.replace(/\s/g, "")}`,
+    icon: <Phone className="h-5 w-5 text-white" />,
+    label: "Call us",
+    value: PHONE_DISPLAY,
+    colorClass: "gradient-blue",
+    external: false,
+  },
+];
+
 export default function Contact() {
   const { toast } = useToast();
   const [form, setForm] = useState({ name: "", phone: "", email: "", location: "", projectType: "", budget: "", message: "" });
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,119 +54,194 @@ export default function Contact() {
       toast({ title: "Please check your details", description: parsed.error.issues[0].message, variant: "destructive" });
       return;
     }
-    const text = `Hi SSGROUP, I'd like a quote.%0A%0A*Name:* ${form.name}%0A*Phone:* ${form.phone}%0A*Email:* ${form.email}%0A*Location:* ${form.location}%0A*Project:* ${form.projectType}%0A*Budget:* ${form.budget}%0A%0A${form.message}`;
+    const text = `Hi AXGROUPS, I'd like a quote.%0A%0A*Name:* ${form.name}%0A*Phone:* ${form.phone}%0A*Email:* ${form.email}%0A*Location:* ${form.location}%0A*Project:* ${form.projectType}%0A*Budget:* ${form.budget}%0A%0A${form.message}`;
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, "_blank");
     toast({ title: "Quote request ready", description: "We've opened WhatsApp to send your request." });
   };
 
   return (
-    <section id="contact" className="py-24 gradient-section">
+    <section id="contact" className="py-24 gradient-section" ref={ref}>
       <div className="container">
-        <div className="text-center max-w-2xl mx-auto mb-14 reveal">
+        <motion.div
+          className="text-center max-w-2xl mx-auto mb-14"
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7 }}
+        >
           <span className="text-accent font-semibold uppercase tracking-widest text-sm">Contact</span>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-gradient-section mt-3 mb-5">
             Request a Free Quote
           </h2>
           <p className="text-muted-foreground text-lg">Tell us about your project. Our Trincomalee team will get back to you fast.</p>
-        </div>
+        </motion.div>
 
         <div className="grid lg:grid-cols-5 gap-8">
-          <div className="lg:col-span-3 bg-card/95 backdrop-blur-sm border rounded-3xl p-8 shadow-card reveal transition-smooth hover:shadow-elegant hover:border-accent/20">
+          {/* Form */}
+          <motion.div
+            className="lg:col-span-3 bg-card/95 backdrop-blur-sm border rounded-3xl p-8 shadow-card hover:shadow-elegant hover:border-accent/20 transition-smooth"
+            initial={{ opacity: 0, y: 100 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          >
             <div className="mb-6 pb-5 border-b">
               <h3 className="font-display text-2xl font-bold text-primary">Project Inquiry Form</h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                Share your details and project requirements. We will contact you with a tailored quote.
-              </p>
+              <p className="text-sm text-muted-foreground mt-1">Share your details and project requirements. We will contact you with a tailored quote.</p>
             </div>
             <form onSubmit={onSubmit} className="grid sm:grid-cols-2 gap-5">
-              <div>
-                <Label htmlFor="name">Full Name</Label>
-                <Input id="name" placeholder="Enter your full name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} maxLength={100} className="mt-1.5 transition-smooth focus-visible:ring-accent/60" />
-              </div>
-              <div>
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input id="phone" type="tel" placeholder="+94 77 123 4567" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} maxLength={20} className="mt-1.5 transition-smooth focus-visible:ring-accent/60" />
-              </div>
-              <div className="sm:col-span-2">
+              {[
+                { id: "name", label: "Full Name", placeholder: "Enter your full name", type: "text", colSpan: false },
+                { id: "phone", label: "Phone Number", placeholder: "+94 77 123 4567", type: "tel", colSpan: false },
+              ].map((field, i) => (
+                <motion.div
+                  key={field.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={inView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 0.15 + i * 0.05 }}
+                >
+                  <Label htmlFor={field.id}>{field.label}</Label>
+                  <Input
+                    id={field.id}
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    value={(form as any)[field.id]}
+                    onChange={(e) => setForm({ ...form, [field.id]: e.target.value })}
+                    className="mt-1.5 transition-smooth focus-visible:ring-accent/60"
+                  />
+                </motion.div>
+              ))}
+              <motion.div
+                className="sm:col-span-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.25 }}
+              >
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" type="email" placeholder="you@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} maxLength={255} className="mt-1.5 transition-smooth focus-visible:ring-accent/60" />
-              </div>
-              <div className="sm:col-span-2">
+              </motion.div>
+              <motion.div
+                className="sm:col-span-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.3 }}
+              >
                 <Label htmlFor="location">Project Location</Label>
                 <Input id="location" placeholder="City / project site location" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} maxLength={120} className="mt-1.5 transition-smooth focus-visible:ring-accent/60" />
-              </div>
-              <div>
+              </motion.div>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.35 }}>
                 <Label>Project Type</Label>
                 <Select value={form.projectType} onValueChange={(v) => setForm({ ...form, projectType: v })}>
-                  <SelectTrigger className="mt-1.5 transition-smooth focus-visible:ring-accent/60"><SelectValue placeholder="Select type" /></SelectTrigger>
-                  <SelectContent>
-                    {projectTypes.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-                  </SelectContent>
+                  <SelectTrigger className="mt-1.5"><SelectValue placeholder="Select type" /></SelectTrigger>
+                  <SelectContent>{projectTypes.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
                 </Select>
-              </div>
-              <div>
+              </motion.div>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.4 }}>
                 <Label>Budget Range</Label>
                 <Select value={form.budget} onValueChange={(v) => setForm({ ...form, budget: v })}>
-                  <SelectTrigger className="mt-1.5 transition-smooth focus-visible:ring-accent/60"><SelectValue placeholder="Select budget" /></SelectTrigger>
-                  <SelectContent>
-                    {budgets.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-                  </SelectContent>
+                  <SelectTrigger className="mt-1.5"><SelectValue placeholder="Select budget" /></SelectTrigger>
+                  <SelectContent>{budgets.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
                 </Select>
-              </div>
-              <div className="sm:col-span-2">
+              </motion.div>
+              <motion.div className="sm:col-span-2" initial={{ opacity: 0, y: 10 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.45 }}>
                 <Label htmlFor="message">Message</Label>
                 <Textarea id="message" placeholder="Tell us about your project scope, timeline, and any specific requirements..." value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} maxLength={1000} rows={4} className="mt-1.5 transition-smooth focus-visible:ring-accent/60" />
-              </div>
-              <div className="sm:col-span-2 pt-1 flex justify-end">
+              </motion.div>
+              <motion.div className="sm:col-span-2 pt-1 flex justify-end" initial={{ opacity: 0, y: 10 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.5 }}>
                 <Button type="submit" variant="hero" size="lg" className="w-full sm:w-auto">
                   Send Quote Request <Send />
                 </Button>
-              </div>
+              </motion.div>
             </form>
+          </motion.div>
 
-          </div>
+          {/* Contact info */}
+          <motion.div
+            className="lg:col-span-2 space-y-4"
+            initial={{ opacity: 0, y: -100 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {[
+              {
+                href: `tel:${PHONE_DISPLAY.replace(/\s/g, "")}`,
+                icon: <Phone className="h-5 w-5 text-white" />,
+                label: "Call us",
+                value: PHONE_DISPLAY,
+                iconBg: "gradient-blue",
+                external: false,
+              },
+              {
+                href: whatsappLink("Hi AXGROUPS, I'd like to inquire about your services."),
+                icon: <WhatsAppIcon className="h-5 w-5 text-white" />,
+                label: "Chat on WhatsApp",
+                value: "Quick reply guaranteed",
+                sub: 'Sample: "Hi AXGROUPS, I need a quote for my house project."',
+                iconBg: "bg-[#25D366]",
+                external: true,
+              },
+              {
+                href: `mailto:${EMAIL}`,
+                icon: <Mail className="h-5 w-5 text-white" />,
+                label: "Email",
+                value: EMAIL,
+                iconBg: "gradient-blue",
+                external: false,
+              },
+            ].map((item, i) => (
+              <motion.a
+                key={item.label}
+                href={item.href}
+                target={item.external ? "_blank" : undefined}
+                rel={item.external ? "noopener noreferrer" : undefined}
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
+                whileHover={{ y: -4, scale: 1.02 }}
+                className="group flex items-start gap-4 bg-card/95 backdrop-blur-sm border rounded-2xl p-6 shadow-card transition-smooth block"
+              >
+                <motion.div
+                  className={`h-12 w-12 rounded-xl ${item.iconBg} flex items-center justify-center shrink-0`}
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  {item.icon}
+                </motion.div>
+                <div>
+                  <div className="text-sm text-muted-foreground">{item.label}</div>
+                  <div className="font-semibold text-primary">{item.value}</div>
+                  {item.sub && <div className="text-xs text-muted-foreground mt-1">{item.sub}</div>}
+                </div>
+              </motion.a>
+            ))}
 
-          <div className="lg:col-span-2 space-y-4 reveal">
-            <a href={`tel:${PHONE_DISPLAY.replace(/\s/g, "")}`} className="group flex items-start gap-4 bg-card/95 backdrop-blur-sm border rounded-2xl p-6 shadow-card hover-lift transition-smooth">
-              <div className="h-12 w-12 rounded-xl gradient-blue flex items-center justify-center shrink-0 transition-smooth group-hover:scale-105"><Phone className="h-5 w-5 text-white" /></div>
-              <div>
-                <div className="text-sm text-muted-foreground">Call us</div>
-                <div className="font-semibold text-primary">{PHONE_DISPLAY}</div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.6, duration: 0.5 }}
+              className="flex items-start gap-4 bg-card/95 backdrop-blur-sm border rounded-2xl p-6 shadow-card"
+            >
+              <div className="h-12 w-12 rounded-xl gradient-blue flex items-center justify-center shrink-0">
+                <MapPin className="h-5 w-5 text-white" />
               </div>
-            </a>
-            <a href={whatsappLink("Hi SSGROUP, I'd like to inquire about your services.")} target="_blank" rel="noopener noreferrer" className="group flex items-start gap-4 bg-card/95 backdrop-blur-sm border rounded-2xl p-6 shadow-card hover-lift transition-smooth">
-              <div className="h-12 w-12 rounded-xl bg-[#25D366] flex items-center justify-center shrink-0 transition-smooth group-hover:scale-105">
-                <WhatsAppIcon className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <div className="text-sm text-muted-foreground">Chat on WhatsApp</div>
-                <div className="font-semibold text-primary">Quick reply guaranteed</div>
-                <div className="text-xs text-muted-foreground mt-1">Sample: "Hi SSGROUP, I need a quote for my house project."</div>
-              </div>
-            </a>
-            <a href={`mailto:${EMAIL}`} className="group flex items-start gap-4 bg-card/95 backdrop-blur-sm border rounded-2xl p-6 shadow-card hover-lift transition-smooth">
-              <div className="h-12 w-12 rounded-xl gradient-blue flex items-center justify-center shrink-0 transition-smooth group-hover:scale-105"><Mail className="h-5 w-5 text-white" /></div>
-              <div>
-                <div className="text-sm text-muted-foreground">Email</div>
-                <div className="font-semibold text-primary">{EMAIL}</div>
-              </div>
-            </a>
-            <div className="flex items-start gap-4 bg-card/95 backdrop-blur-sm border rounded-2xl p-6 shadow-card transition-smooth">
-              <div className="h-12 w-12 rounded-xl gradient-blue flex items-center justify-center shrink-0"><MapPin className="h-5 w-5 text-white" /></div>
               <div>
                 <div className="text-sm text-muted-foreground">Address</div>
                 <div className="font-semibold text-primary">{ADDRESS}</div>
               </div>
-            </div>
-            <div className="rounded-2xl overflow-hidden border shadow-card h-56 transition-smooth hover:shadow-elegant">
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.7, duration: 0.5 }}
+              className="rounded-2xl overflow-hidden border shadow-card h-56 hover:shadow-elegant transition-smooth"
+            >
               <iframe
-                title="SSGROUP location Trincomalee"
+                title="AXGROUPS location Trincomalee"
                 src="https://www.google.com/maps?q=Trincomalee,Sri+Lanka&output=embed"
                 className="w-full h-full"
                 loading="lazy"
               />
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </section>

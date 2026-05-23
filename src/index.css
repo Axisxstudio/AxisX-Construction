@@ -74,7 +74,7 @@
 @layer base {
   * { @apply border-border; }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased overflow-x-hidden;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     font-size: 1.05rem; /* Slightly larger for luxury feel */
     line-height: 1.65;
@@ -84,7 +84,10 @@
     @apply tracking-tight font-bold;
     letter-spacing: -0.02em;
   }
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
 
   /* Custom scrollbar for light theme */
   ::-webkit-scrollbar { width: 6px; }

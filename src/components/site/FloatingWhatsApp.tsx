@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import { whatsappLink } from "@/lib/whatsapp";
+import { motion, AnimatePresence } from "framer-motion";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -15,40 +16,73 @@ export default function FloatingWhatsApp() {
   const [showSample, setShowSample] = useState(true);
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
-      {showSample ? (
-        <div className="max-w-[240px] rounded-lg bg-white text-foreground text-xs px-3 py-2 shadow-soft border flex items-start gap-2">
-          <span className="leading-relaxed">{sampleMessage}</span>
-          <button
-            type="button"
-            onClick={() => setShowSample(false)}
-            className="mt-0.5 shrink-0 text-muted-foreground hover:text-foreground transition-smooth"
-            aria-label="Close WhatsApp message"
+    <motion.div
+      className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2"
+      initial={{ opacity: 0, y: 40, scale: 0.8 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay: 2.5, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <AnimatePresence>
+        {showSample ? (
+          <motion.div
+            key="bubble"
+            initial={{ opacity: 0, scale: 0.8, x: 20 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.8, x: 20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="max-w-[240px] rounded-lg bg-white text-foreground text-xs px-3 py-2 shadow-soft border flex items-start gap-2"
           >
-            <X className="h-3.5 w-3.5" />
-          </button>
-        </div>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setShowSample(true)}
-          className="rounded-full bg-white border px-3 py-1 text-xs font-semibold text-foreground shadow-soft hover:bg-secondary transition-smooth"
-          aria-label="Show WhatsApp message"
-        >
-          Hi!
-        </button>
-      )}
-      <a
+            <span className="leading-relaxed">{sampleMessage}</span>
+            <motion.button
+              type="button"
+              onClick={() => setShowSample(false)}
+              className="mt-0.5 shrink-0 text-muted-foreground hover:text-foreground transition-smooth"
+              aria-label="Close WhatsApp message"
+              whileHover={{ scale: 1.2, rotate: 90 }}
+              whileTap={{ scale: 0.85 }}
+            >
+              <X className="h-3.5 w-3.5" />
+            </motion.button>
+          </motion.div>
+        ) : (
+          <motion.button
+            key="hi-btn"
+            type="button"
+            onClick={() => setShowSample(true)}
+            className="rounded-full bg-white border px-3 py-1 text-xs font-semibold text-foreground shadow-soft hover:bg-secondary transition-smooth"
+            aria-label="Show WhatsApp message"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            whileHover={{ scale: 1.08 }}
+          >
+            Hi!
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      <motion.a
         href={whatsappLink(sampleMessage)}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
         title={sampleMessage}
-        className="relative h-14 w-14 rounded-full bg-[#25D366] hover:bg-[#1fb958] text-white shadow-elegant flex items-center justify-center animate-float transition-smooth hover:scale-110"
+        className="relative h-14 w-14 rounded-full bg-[#25D366] hover:bg-[#1fb958] text-white shadow-elegant flex items-center justify-center transition-smooth"
+        whileHover={{ scale: 1.15, rotate: 10 }}
+        whileTap={{ scale: 0.9 }}
+        animate={{ y: [0, -6, 0] }}
+        transition={{
+          y: { duration: 2.5, repeat: Infinity, ease: "easeInOut" },
+          scale: { type: "spring", stiffness: 300, damping: 15 },
+        }}
       >
         <WhatsAppIcon className="h-7 w-7" />
-        <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-30" />
-      </a>
-    </div>
+        <motion.span
+          className="absolute inset-0 rounded-full bg-[#25D366] opacity-30"
+          animate={{ scale: [1, 1.6, 1], opacity: [0.3, 0, 0.3] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
+      </motion.a>
+    </motion.div>
   );
 }

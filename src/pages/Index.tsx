@@ -17,7 +17,7 @@ const Index = () => {
   useReveal();
 
   useEffect(() => {
-    document.title = "SSGROUP Engineering & Construction | Construction Company in Trincomalee";
+    document.title = "AXGROUPS Engineering & Construction | Construction Company in Trincomalee";
 
     const setMeta = (name: string, content: string) => {
       let el = document.querySelector(`meta[name="${name}"]`);
@@ -26,14 +26,14 @@ const Index = () => {
     };
     setMeta(
       "description",
-      "SSGROUP Engineering & Construction provides building construction, renovation, plumbing, electrical, carpentry, estimation, landscaping, and construction material services in Trincomalee, Sri Lanka."
+      "AXGROUPS Engineering & Construction provides building construction, renovation, plumbing, electrical, carpentry, estimation, landscaping, and construction material services in Trincomalee, Sri Lanka."
     );
 
     let canonical = document.querySelector('link[rel="canonical"]');
     if (!canonical) { canonical = document.createElement("link"); canonical.setAttribute("rel", "canonical"); document.head.appendChild(canonical); }
     canonical.setAttribute("href", window.location.origin + "/");
 
-    const ldId = "ssgroup-ldjson";
+    const ldId = "AXGROUPS-ldjson";
     document.getElementById(ldId)?.remove();
     const script = document.createElement("script");
     script.type = "application/ld+json";
@@ -41,7 +41,7 @@ const Index = () => {
     script.text = JSON.stringify({
       "@context": "https://schema.org",
       "@type": "GeneralContractor",
-      name: "SSGROUP Engineering & Construction",
+      name: "AXGROUPS Engineering & Construction",
       description: "Construction Company in Trincomalee providing engineering, building, renovation, and material supply services.",
       areaServed: "Trincomalee, Sri Lanka",
       address: { "@type": "PostalAddress", addressLocality: "Trincomalee", addressCountry: "LK" },
@@ -50,9 +50,9 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       <Header />
-      <main>
+      <main className="overflow-x-hidden">
         <Hero />
         <Projects />
         <About />

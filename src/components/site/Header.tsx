@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, HardHat, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/axisx-logo.png";
 import { whatsappLink, serviceMessage } from "@/lib/whatsapp";
+import { motion, AnimatePresence } from "framer-motion";
 
 const links = [
   { href: "#home", label: "Home" },
@@ -24,7 +25,6 @@ export default function Header() {
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 10);
-      // Detect active section
       const sections = links.map((l) => l.href.replace("#", ""));
       for (const s of [...sections].reverse()) {
         const el = document.getElementById(s);
@@ -68,8 +68,11 @@ export default function Header() {
   }, []);
 
   return (
-    <header
+    <motion.header
       ref={headerRef}
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${
         scrolled && !open
           ? "glass shadow-[0_8px_32px_-8px_hsl(0_0%_0%/0.3)] py-0 border-b border-white/10"
@@ -77,131 +80,192 @@ export default function Header() {
       }`}
     >
       {/* Top accent line */}
-      <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-accent to-transparent opacity-60" />
+      <motion.div
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+        className="h-[2px] w-full bg-gradient-to-r from-transparent via-accent to-transparent opacity-60"
+      />
 
       <div className="container flex items-center justify-between h-18 py-3">
         {/* Logo */}
-        <a href="#home" className="flex items-center gap-3 group" onClick={() => setOpen(false)}>
+        <motion.a
+          href="#home"
+          className="flex items-center gap-3 group"
+          onClick={() => setOpen(false)}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          whileHover={{ scale: 1.02 }}
+        >
           <div className="relative">
             <div className="absolute inset-0 rounded-xl bg-accent/20 blur-md group-hover:bg-accent/35 transition-all duration-500" />
             <img
               src={logo}
-              alt="SSGROUP Engineering & Construction logo"
+              alt="AXGROUPS Engineering & Construction logo"
               width={44}
               height={44}
               className="relative h-11 w-11 object-contain"
             />
           </div>
           <div className="leading-tight">
-            <div className="font-display font-bold text-white text-base sm:text-lg tracking-wide">SSGROUP</div>
+            <div className="font-display font-bold text-white text-base sm:text-lg tracking-wide">AXGROUPS</div>
             <div className="text-[8px] sm:text-[9px] tracking-premium text-accent/80 font-medium">Engineering & Construction</div>
           </div>
-        </a>
+        </motion.a>
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-1">
-          {links.map((l) => {
+          {links.map((l, i) => {
             const isActive = activeSection === l.href.replace("#", "");
             return (
-              <a
+              <motion.a
                 key={l.href}
                 href={l.href}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.3 + i * 0.06 }}
                 className={`relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
                   isActive
                     ? "text-accent"
                     : "text-white/70 hover:text-white hover:bg-white/5"
                 }`}
+                whileHover={{ scale: 1.05 }}
               >
                 {l.label}
                 {isActive && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-4 bg-accent rounded-full shadow-blue" />
+                  <motion.span
+                    layoutId="nav-underline"
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-4 bg-accent rounded-full shadow-blue"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
                 )}
-              </a>
+              </motion.a>
             );
           })}
         </nav>
 
         {/* CTA */}
-        <div className="hidden lg:flex items-center gap-3">
-          <a
+        <motion.div
+          className="hidden lg:flex items-center gap-3"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >
+          <motion.a
             href={whatsappLink(serviceMessage("a free consultation"))}
             target="_blank"
             rel="noopener noreferrer"
-            className="shine group flex items-center gap-2 px-5 py-2.5 rounded-xl gradient-blue text-white text-sm font-semibold shadow-blue hover:shadow-[0_12px_40px_-8px_hsl(205_100%_58%/0.7)] transition-all duration-300 hover:-translate-y-0.5"
+            className="shine group flex items-center gap-2 px-5 py-2.5 rounded-xl gradient-blue text-white text-sm font-semibold shadow-blue hover:shadow-[0_12px_40px_-8px_hsl(205_100%_58%/0.7)] transition-all duration-300"
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.97 }}
           >
             <HardHat className="h-4 w-4" />
             Free Consultation
             <ChevronRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-          </a>
-        </div>
+          </motion.a>
+        </motion.div>
 
         {/* Mobile toggle */}
-        <button
+        <motion.button
           className="lg:hidden p-2.5 text-white/95 hover:text-white transition-all"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          whileTap={{ scale: 0.9 }}
         >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+          <AnimatePresence mode="wait">
+            {open ? (
+              <motion.div
+                key="close"
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <X className="h-5 w-5" />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="menu"
+                initial={{ rotate: 90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: -90, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Menu className="h-5 w-5" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.button>
       </div>
 
       {/* Mobile Menu */}
-      {open && (
-        <div
-          className="lg:hidden fixed inset-0 z-[200] bg-[linear-gradient(160deg,hsl(220_32%_8%/0.98),hsl(215_40%_12%/0.96),hsl(205_52%_15%/0.95))] backdrop-blur-md transition-all duration-500 ease-out animate-fade-in"
-          onClick={() => setOpen(false)}
-        >
-          <nav
-            className="container h-full flex flex-col pt-28 pb-8 gap-2 overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="lg:hidden fixed inset-0 z-[200] bg-[linear-gradient(160deg,hsl(220_32%_8%/0.98),hsl(215_40%_12%/0.96),hsl(205_52%_15%/0.95))] backdrop-blur-md"
+            onClick={() => setOpen(false)}
           >
-            <div className="fixed top-0 left-0 right-0 z-10 bg-[linear-gradient(160deg,hsl(220_32%_8%/0.98),hsl(215_40%_12%/0.96),hsl(205_52%_15%/0.95))] border-b border-white/10">
-              <div className="container h-20 flex items-center justify-between">
-                <a href="#home" onClick={() => setOpen(false)} className="flex items-center gap-3">
-                  <img
-                    src={logo}
-                    alt="logo"
-                    width={40}
-                    height={40}
-                    className="h-10 w-10 object-contain"
-                  />
-                  <div className="leading-tight text-left">
-                    <div className="font-display font-bold text-white text-base tracking-wide">SSGROUP</div>
-                    <div className="text-[9px] tracking-premium text-accent/80 font-medium">Engineering & Construction</div>
-                  </div>
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setOpen(false)}
-                  className="p-2 text-white/90 hover:text-white transition-smooth"
-                >
-                  <X className="h-6 w-6" />
-                </button>
-              </div>
-            </div>
-            {links.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                className="py-3.5 px-4 text-white/85 hover:text-accent hover:bg-white/5 rounded-xl font-medium transition-all duration-300 flex items-center justify-between group"
-              >
-                {l.label}
-                <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-              </a>
-            ))}
-            <a
-              href={whatsappLink(serviceMessage("a free consultation"))}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setOpen(false)}
-              className="mt-4 flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl gradient-blue text-white font-semibold shadow-blue"
+            <nav
+              className="container h-full flex flex-col pt-28 pb-8 gap-2 overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
             >
-              <HardHat className="h-4 w-4" /> Get Free Consultation
-            </a>
-          </nav>
-        </div>
-      )}
-    </header>
+              <div className="fixed top-0 left-0 right-0 z-10 bg-[linear-gradient(160deg,hsl(220_32%_8%/0.98),hsl(215_40%_12%/0.96),hsl(205_52%_15%/0.95))] border-b border-white/10">
+                <div className="container h-20 flex items-center justify-between">
+                  <a href="#home" onClick={() => setOpen(false)} className="flex items-center gap-3">
+                    <img src={logo} alt="logo" width={40} height={40} className="h-10 w-10 object-contain" />
+                    <div className="leading-tight text-left">
+                      <div className="font-display font-bold text-white text-base tracking-wide">AXGROUPS</div>
+                      <div className="text-[9px] tracking-premium text-accent/80 font-medium">Engineering & Construction</div>
+                    </div>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className="p-2 text-white/90 hover:text-white transition-smooth"
+                  >
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
+              </div>
+              {links.map((l, i) => (
+                <motion.a
+                  key={l.href}
+                  href={l.href}
+                  onClick={() => setOpen(false)}
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.07, duration: 0.35, ease: "easeOut" }}
+                  className="py-3.5 px-4 text-white/85 hover:text-accent hover:bg-white/5 rounded-xl font-medium transition-all duration-300 flex items-center justify-between group"
+                >
+                  {l.label}
+                  <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                </motion.a>
+              ))}
+              <motion.a
+                href={whatsappLink(serviceMessage("a free consultation"))}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setOpen(false)}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: links.length * 0.07 + 0.1, duration: 0.4 }}
+                className="mt-4 flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl gradient-blue text-white font-semibold shadow-blue"
+              >
+                <HardHat className="h-4 w-4" /> Get Free Consultation
+              </motion.a>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.header>
   );
 }
